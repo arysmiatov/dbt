@@ -1,12 +1,13 @@
 {{ config ( 
-    materialized="table"  -- Если тут пусто, то вместо таблицы будет создано View
+    materialized="table" 
 )}}
 
-with leads as {{ ref=('stg_leads') }}
+with leads as ( select * from {{ ref('stg_leads') }})
+
 
 select
-    l.date
+    l.date,
     l.leadSource,
     count(*) as NumberOfLeads
 from leads l
-group 1,2
+group by l.date, l.leadSource
