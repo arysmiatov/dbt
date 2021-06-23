@@ -2,9 +2,8 @@
     materialized="table" 
 )}}
 
-with leads as ( select * from {{ ref('stg_leads') }})
-
-with transactions as ( select * from {{ ref('stg_transactions') }})
+with leads as ( select * from {{ ref('stg_leads') }}),
+transactions as ( select * from {{ ref('stg_transactions') }})
 
 select
     l.*,
