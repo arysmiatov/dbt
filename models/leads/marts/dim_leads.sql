@@ -17,6 +17,6 @@ from leads l
 {% if is_incremental() %}
 
   -- this filter will only be applied on an incremental run
-  where l.Date > (select date_add(max(l.Date), INTERVAL -2 DAY) from {{ this }})
+  where l.Date > (select max(l.Date) from {{ this }})
 
 {% endif %}
