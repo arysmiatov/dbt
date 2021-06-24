@@ -1,5 +1,10 @@
-{{ config ( 
-    materialized="table" 
+{{ config(
+    materialized='table',
+    partition_by={
+      "field": "date",
+      "data_type": "timestamp",
+      "granularity": "day"
+    }
 )}}
 
 with leads as ( select * from {{ ref('stg_leads') }}),
