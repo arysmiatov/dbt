@@ -49,7 +49,7 @@ with leads as (
             when l.ProjectStatus=32 then 'Start'
             when l.ProjectStatus=64 then 'Transaction'
         end as ProjectStatus,
-        date(date_add(l.date, interval 6 HOUR)) as date,
+        date_add(l.date, interval 6 HOUR) as date,
 
     from `homsters-kz-dwh.raw_data.leads` l
     where date(l.date) >= '2020-06-01'
