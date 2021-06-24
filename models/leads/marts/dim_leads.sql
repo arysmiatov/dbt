@@ -1,10 +1,6 @@
 {{ config(
-    materialized='table',
-    partition_by={
-      "field": "date",
-      "data_type": "timestamp",
-      "granularity": "day"
-    }
+    materialized='incremental',
+    unique_key='id'
 )}}
 
 with leads as ( select * from {{ ref('stg_leads') }}),
@@ -18,3 +14,9 @@ select
     END as Billable
 from leads l
 
+{% if is_incremental() %}
+
+  -- this filter will only be applied on an incremental run
+  where l.Date > (select date_add(max(l.Date), INTERVAL -2 DAY) from {{ this }})
+
+{% endif %}
