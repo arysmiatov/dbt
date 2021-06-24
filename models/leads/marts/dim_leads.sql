@@ -1,5 +1,8 @@
-{{ config(
-    materialized='incremental'
+{{config(
+    materialized = 'incremental',
+    unique_key = 'id',
+    partition_by = { 'field': 'date', 'data_type': 'timestamp' },
+    incremental_strategy = 'insert_overwrite'
 )}}
 
 with leads as ( select * from {{ ref('stg_leads') }}),
