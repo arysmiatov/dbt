@@ -1,6 +1,6 @@
 {{ config(
-    materialized='incremental',
-    unique_key='id'
+    materialized='incremental'--,
+    -- unique_key='id'
 )}}
 
 with leads as ( select * from {{ ref('stg_leads') }}),
