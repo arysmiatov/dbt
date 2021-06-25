@@ -52,7 +52,7 @@ with leads as (
         date_add(l.date, interval 6 HOUR) as date,
 
     from `homsters-kz-dwh.raw_data.leads` l
-    where date(l.date) >= '2021-06-01'
+    where date(l.date) >= '2020-06-01'
 )
 
 select
