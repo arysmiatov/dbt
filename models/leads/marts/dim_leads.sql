@@ -1,5 +1,5 @@
 {{config(
-    materialized = 'incremental'
+    materialized = 'table'
 )}}
 
 with leads as ( select * from {{ ref('stg_leads') }}),
@@ -12,10 +12,3 @@ select
         ELSE 0 
     END as Billable
 from leads l
-
-{% if is_incremental() %}
-
-  -- this filter will only be applied on an incremental run
-  where l.Date > (select max(l.Date) from {{ this }})
-
-{% endif %}
