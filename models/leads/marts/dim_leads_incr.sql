@@ -20,8 +20,6 @@ from leads l
 
 {% if is_incremental() %}
 
-where date(Date) > (select max(date(Date)) from {{ this }})
-
--- where date(date) >= date_sub(_dbt_max_partition, interval 1 day)
+where date(Date) > (select date_add(max(date(Date)), interval -2 DAY) from {{ this }})
 
 {% endif %}
