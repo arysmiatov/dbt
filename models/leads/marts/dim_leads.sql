@@ -1,6 +1,10 @@
 {{config(
-    materialized = 'table'
+    materialized = 'incremental',
+    unique_key = 'id',
+    partition_by = { 'field': 'date', 'data_type': 'timestamp' },
+    incremental_strategy = 'insert_overwrite'
 )}}
+
 
 with leads as ( select * from {{ ref('stg_leads') }}),
 transactions as ( select * from {{ ref('stg_transactions') }})
@@ -12,3 +16,10 @@ select
         ELSE 0 
     END as Billable
 from leads l
+
+
+{% if is_incremental() %}
+
+where date(Date) > (select date_add(max(date(Date)), interval -2 DAY) from {{ this }})
+
+{% endif %}
