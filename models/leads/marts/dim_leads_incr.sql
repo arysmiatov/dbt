@@ -1,11 +1,15 @@
-{{ config(
-    materialized='table',
-    partition_by={
-      "field": "date",
-      "data_type": "timestamp",
-      "granularity": "day"
-    }
+{% set partitions_to_replace = [
+    'current_date',
+    'date_sub(current_date, interval 2 day)'
+] %}
+
+{{config(
+    materialized = 'incremental',
+    partition_by = { 'field': 'date', 'data_type': 'timestamp' },
+    incremental_strategy = 'insert_overwrite',
+    partitions = partitions_to_replace
 )}}
+
 
 with leads as ( select * from {{ ref('stg_leads') }}),
 transactions as ( select * from {{ ref('stg_transactions') }})
@@ -18,9 +22,9 @@ select
     END as Billable
 from leads l
 
--- {% if is_incremental() %}
 
---   -- this filter will only be applied on an incremental run
---   where l.Date > (select max(l.Date) from {{ this }})
+{% if is_incremental() %}
 
--- {% endif %}
+where date(date) in ({{ partitions_to_replace | join(',') }})
+
+{% endif %}
