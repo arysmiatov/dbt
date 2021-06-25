@@ -1,13 +1,8 @@
-{% set partitions_to_replace = [
-    'current_date',
-    'date_sub(current_date, interval 2 day)'
-] %}
-
 {{config(
     materialized = 'incremental',
+    unique_key = 'id',
     partition_by = { 'field': 'date', 'data_type': 'timestamp' },
-    incremental_strategy = 'insert_overwrite',
-    partitions = partitions_to_replace
+    incremental_strategy = 'insert_overwrite'
 )}}
 
 
@@ -25,6 +20,6 @@ from leads l
 
 {% if is_incremental() %}
 
-where date(date) in ({{ partitions_to_replace | join(',') }})
+where date(date) >= date_sub(_dbt_max_partition, interval 1 day)
 
 {% endif %}
