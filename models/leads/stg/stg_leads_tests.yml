@@ -1,9 +1,0 @@
-version 1:
-
-models:
-  - name: stg_leads
-    columns:
-      - name: id
-        tests:
-          - unique
-          - not_null
